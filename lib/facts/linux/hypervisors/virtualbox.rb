@@ -6,6 +6,10 @@ module Facts
       class VirtualBox
         FACT_NAME = 'hypervisors.virtualbox'
 
+        def initialize
+          @log = Facter::Log.new(self)
+        end
+
         def call_the_resolver
           fact_value = check_virtualbox
           Facter::ResolvedFact.new(FACT_NAME, fact_value)
@@ -17,6 +21,8 @@ module Facts
           if Facter::Resolvers::Linux::DmiBios.resolve(:product_name) == 'VirtualBox' ||
              Facter::Resolvers::VirtWhat.resolve(:vm) =~ /virtualbox/ ||
              Facter::Resolvers::Lspci.resolve(:vm) == 'virtualbox'
+
+            @log.debug('Virtualbox hypervisor detected')
 
             virtualbox_details = {}
 
